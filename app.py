@@ -20,21 +20,21 @@ def details():
         source = urllib.request.urlopen(req).read()
         responseData = json.loads(source)
 
-    features = responseData.get("Features", [])
-    if not features:
-        return render_template("index.html", error="Location not found.")
+        features = responseData.get("features", [])
+        if not features:
+            return render_template("index.html", error="Location not found.")
 
-    lon, lat = features[0]["geometry"]["coordinates"]
+        lon, lat = features[0]["geometry"]["coordinates"]
 
-    data={
-        "latitude": str(lat),
-        "longitude": str(lon)
-    }
+        data={
+            "latitude": str(lat),
+            "longitude": str(lon)
+        }
 
-    return render_template("index.html", data=data)
+        return render_template("index.html", data=data)
 
-except Exception:
-    return render_template("index.html", error="An error occurred while fetching location data.")
+    except Exception:
+        return render_template("index.html", error="An error occurred while fetching location data.")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)

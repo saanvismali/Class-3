@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> Map Location Finder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      html, body { margin: 0; padding: 0; height:100%;}    
+      form { padding: 12px;}
+      #mapContainer { width: 100vw; height: 80vh}
+    </style>
+</head>
+<body>
+  <form method="POST" action="/">
+    <input type="text" name="location" required>
+    <button type="submit">Search</button>
+  </form>
+  
+  {% if location %}
+    <p style="padding:0 12px; color: red;">{{ error}}</p>
+  {% endif %}
+  {% if data and data.latitude and data.longitude %}
+    <h1 style="padding:0 12px;">Details</h1>
+     <p style="padding:0 12px; ">The latitude is {{ data.latitude }}</p>
+     <p style="padding:0 12px; ">The longitude is {{ data.longitude }}</p>
+   {% endif %}
+
+<div
+    id="mapContainer"
+    data-latitude="{{ data.latitude if data and data.latitude else '' }}"
+    data-longitude="{{ data.longitude if data and data.longitude else '' }}"
+></div>
+
+<script>
+    const container = document.getElementById('mapContainer');
+    const latStr = container.dataset.latitude;
+    const longStr = container.dataset.longitude;
+
+    let latitude = 20.5937, longitude = 78.9629; zoom = 4
+
+    if (latStr && longStr) {
+        latitude = parseFloat(latStr);
+        longitude = parseFloat(longStr);
+        zoom = 12;
+    }
+const map = L.map('mapContainer').setView([latitude, longitude], zoom);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19,
+        attribution: "&copy; OpenStreetmap contributions"
+    }).addTo(map);
+    if (latStr && longStr) {
+        L.marker([latitude, longitude]).addTo(map);
+    }
+</script>
+</body>
+</html>
